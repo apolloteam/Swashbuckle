@@ -124,6 +124,11 @@ You can customize the auto-generated spec by applying the following config optio
                     .SubType<Packaging>()));
 
             c.IncludeXmlComments(GetXmlCommentsPath());
+			
+			c.SetRootPath("panel");
+			
+			c.SetIncludeInheritedProperties(true);
+			
         });
 
 #### ResolveBasePathUsing ####
@@ -247,6 +252,17 @@ Although it's not one of the official XML comment tags, Swashbuckle also support
     
 These values will get mapped to the Operation.ResponseMessages.
 
+#### SetRootPath #### 
+
+The method for setting SetRootPath for the name of the folder where the documentation shows added. 
+Required to run the route configuration (Swashbuckle.Bootstrapper.Init(config);) after setting Swashbuckle (SwaggerSpecConfig.Customize(c =>{ ... }))
+Ex: use /panel instead of /swagger
+
+#### SetIncludeInheritedProperties #### 
+
+The method for setting SetIncludeInheritedProperties added to add the properties of the base classes in the model classes that derive from another class and can not be configured using the method PolymorphicType
+
+
 ### Customize the swagger-ui ###
 
 The Swagger UI supports a number of options to customize it's appearance and behavior. See the [documentation](https://github.com/wordnik/swagger-ui) for a detailed description.
@@ -262,6 +278,8 @@ All of these options are exposed through Swashbuckle configuration ...
             c.InjectStylesheet(typeof(SwaggerConfig).Assembly, "Swashbuckle.TestApp.SwaggerExtensions.customStyles.css");
             
             c.CustomRoute("index.html", resourceAssembly, "Swashbuckle.TestApp.SwaggerExtensions.myIndex.html");
+			
+			c.SetCustomizeHtml( html => html.replace( "<body>", "<body bgcolor=\"#E6E6FA\">" ) );
         });
 
 The **InjectJavaScript** and **InjectStylesheet** options allow custom JavaScript or CSS to be injected into the UI once it's loaded.
@@ -280,6 +298,11 @@ So, if your app's default namespace is "Swashbuckle.TestApp", and you have a cus
 
 You can use the **CustomRoute** option to map a swagger ui path (<your-api-endpoint\>/swagger/ui/{*uiPath}) to 
 a custom embedded resource. For example, the code sample above overrides index.html from the embedded swagger-ui with a custom version. You could use this approach to build your own tailored version of the swagger-ui and then serve it up instead of the default embedded version.
+
+#### SetCustomizeHtml ####
+
+SetCustomizeHtml method which allows to modify the html of index.html file documentation was added.
+Ex: SetCustomizeHtml( html => html.replace( "<body>", "<body bgcolor=\"#E6E6FA\">" ) )
 
 ## Transitioning to Swashbuckle 4.0 ##
 
