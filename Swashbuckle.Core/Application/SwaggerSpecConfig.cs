@@ -9,6 +9,8 @@ using Swashbuckle.SwaggerExtensions;
 
 namespace Swashbuckle.Application
 {
+    using System.Web.Http.Routing;
+
     public class SwaggerSpecConfig
     {
         internal static readonly SwaggerSpecConfig StaticInstance = new SwaggerSpecConfig();
@@ -31,13 +33,18 @@ namespace Swashbuckle.Application
         private readonly List<Func<IOperationFilter>> _operationFilterFactories;
 
         private Info _apiInfo;
+
+        private string _rootPath;
+
+        private bool _includeInheritedProperties;
+
         private IDictionary<string, Authorization> _authorizations { get; set; }
 
 
         public SwaggerSpecConfig()
         {
             BasePathResolver = (req) => req.RequestUri.GetLeftPart(UriPartial.Authority) + req.GetConfiguration().VirtualPathRoot.TrimEnd('/');
-            Versions = null; 
+            Versions = null;
 
             _targetVersionResolver = (req) => "1.0"; // obsolete
             _ignoreObsoleteActions = false;
@@ -49,10 +56,13 @@ namespace Swashbuckle.Application
             _polymorphicTypes = new List<PolymorphicType>();
             _modelFilterFactories = new List<Func<IModelFilter>>();
             _operationFilterFactories = new List<Func<IOperationFilter>>();
+            _rootPath = "swagger";
         }
 
         internal Func<HttpRequestMessage, string> BasePathResolver { get; private set; }
         internal IEnumerable<string> Versions { get; private set; }
+
+
 
         public SwaggerSpecConfig ResolveBasePathUsing(Func<HttpRequestMessage, string> basePathResolver)
         {
@@ -214,6 +224,43 @@ namespace Swashbuckle.Application
                 targetVersion,
                 apiDescriptions,
                 options);
+        }
+
+        internal string RootPath
+        {
+            get
+            {
+                return this._rootPath;
+            }
+            set
+            {
+                this._rootPath = value;
+            }
+        }
+
+        public SwaggerSpecConfig SetRootPath(string rootPath)
+        {
+            this._rootPath = rootPath;
+
+            return this;
+        }
+
+        internal bool IncludeInheritedProperties
+        {
+            get
+            {
+                return this._includeInheritedProperties;
+            }
+            set
+            {
+                this._includeInheritedProperties = value;
+            }
+        }
+
+        public SwaggerSpecConfig SetIncludeInheritedProperties(bool includeInheritedProperties)
+        {
+            this._includeInheritedProperties = includeInheritedProperties;
+            return this;
         }
     }
 }

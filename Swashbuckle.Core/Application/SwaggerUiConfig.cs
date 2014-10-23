@@ -10,8 +10,11 @@ namespace Swashbuckle.Application
     {
         internal static readonly SwaggerUiConfig StaticInstance = new SwaggerUiConfig();
 
+        private Func<string, string> _customizeHtml;
+
         public SwaggerUiConfig()
         {
+            _customizeHtml = (html) => html;
             SupportHeaderParams = false;
             SupportedSubmitMethods = new[] { HttpMethod.Get, HttpMethod.Post, HttpMethod.Put };
             DocExpansion = DocExpansion.None;
@@ -77,6 +80,21 @@ namespace Swashbuckle.Application
             OAuth2ClientId = clientId;
             OAuth2Realm = realm;
             OAuth2AppName = appName;
+        }
+
+        internal string CustomizeHtml(string html)
+        {
+            return _customizeHtml(html);
+        }
+
+        public void SetCustomizeHtml(Func<string, string> value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            _customizeHtml = value;
         }
     }
 

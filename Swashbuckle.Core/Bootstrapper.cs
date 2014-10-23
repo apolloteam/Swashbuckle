@@ -13,28 +13,28 @@ namespace Swashbuckle
         {
             config.Routes.MapHttpRoute(
                 "swagger_root",
-                "swagger",
+                SwaggerSpecConfig.StaticInstance.RootPath,
                 null,
                 null,
-                new RedirectHandler("swagger/ui/index.html"));
+                new RedirectHandler(string.Format("{0}/ui/index.html", SwaggerSpecConfig.StaticInstance.RootPath)));
 
             config.Routes.MapHttpRoute(
                 "swagger_ui",
-                "swagger/ui/{*uiPath}",
+                string.Format("{0}/ui/{{*uiPath}}", SwaggerSpecConfig.StaticInstance.RootPath),
                 null,
                 new { uiPath = @".+" },
                 new SwaggerUiHandler());
 
             config.Routes.MapHttpRoute(
                 "swagger_versioned_api_docs",
-                "swagger/{apiVersion}/api-docs/{resourceName}",
+                string.Format("{0}/{{apiVersion}}/api-docs/{{resourceName}}", SwaggerSpecConfig.StaticInstance.RootPath),
                 new { resourceName = RouteParameter.Optional },
                 null,
                 new SwaggerSpecHandler());
 
             config.Routes.MapHttpRoute(
                 "swagger_api_docs",
-                "swagger/api-docs/{resourceName}",
+                string.Format("{0}/api-docs/{{resourceName}}", SwaggerSpecConfig.StaticInstance.RootPath),
                 new { resourceName = RouteParameter.Optional },
                 null,
                 new SwaggerSpecHandler());

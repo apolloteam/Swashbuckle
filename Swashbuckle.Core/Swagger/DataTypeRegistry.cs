@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Swashbuckle.Swagger
 {
+    using Swashbuckle.Application;
+
     public class DataTypeRegistry
     {
         private static readonly Dictionary<Type, Func<DataType>> PrimitiveMappings = new Dictionary<Type, Func<DataType>>()
@@ -124,6 +126,10 @@ namespace Swashbuckle.Swagger
             var bindingFlags = polymorphicType.IsBase
                 ? BindingFlags.Instance | BindingFlags.Public
                 : BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly;
+
+            if (SwaggerSpecConfig.StaticInstance.IncludeInheritedProperties) { 
+                bindingFlags |= BindingFlags.FlattenHierarchy;
+            }
 
             var propInfos = type.GetProperties(bindingFlags)
                 .Where(propInfo => !propInfo.GetIndexParameters().Any())    // Ignore indexer properties

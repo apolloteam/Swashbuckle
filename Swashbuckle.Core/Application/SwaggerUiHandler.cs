@@ -43,7 +43,7 @@ namespace Swashbuckle.Application
                 return TaskFor(request.CreateErrorResponse(HttpStatusCode.NotFound, ex));
             }
         }
-        
+
         private EmbeddedResource EmbeddedResourceFor(string uiPath)
         {
             EmbeddedResource embeddedResource;
@@ -97,17 +97,18 @@ namespace Swashbuckle.Application
             outputBuilder
                 .Replace("%(StylesheetIncludes)", stylesheetIncludes);
 
-            return new MemoryStream(Encoding.UTF8.GetBytes(outputBuilder.ToString()));
+            string outputHtml = SwaggerUiConfig.StaticInstance.CustomizeHtml(outputBuilder.ToString());
+            return new MemoryStream(Encoding.UTF8.GetBytes(outputHtml));
         }
 
         private IEnumerable<string> GetDiscoveryUrls(HttpRequestMessage swaggerRequest)
         {
             var basePath = _swaggerSpecConfig.BasePathResolver(swaggerRequest);
             if (_swaggerSpecConfig.Versions == null)
-                return new[] { basePath + "/swagger/api-docs" };
+                return new[] { string.Format("{0}/{1}/api-docs", basePath, this._swaggerSpecConfig.RootPath) };
 
             return _swaggerSpecConfig.Versions
-                .Select(version => String.Format("{0}/swagger/{1}/api-docs", basePath, version));
+                .Select(version => String.Format("{0}/{1}/{2}/api-docs", basePath, _swaggerSpecConfig.RootPath, version));
         }
 
         private Task<HttpResponseMessage> TaskFor(HttpResponseMessage response)
