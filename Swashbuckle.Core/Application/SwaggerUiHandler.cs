@@ -96,8 +96,17 @@ namespace Swashbuckle.Application
 
             outputBuilder
                 .Replace("%(StylesheetIncludes)", stylesheetIncludes);
+            
+            string outputHtml;
+            if (request.RequestUri.AbsolutePath.Contains("index.html"))
+            {
+                outputHtml = SwaggerUiConfig.StaticInstance.CustomizeHtml(outputBuilder.ToString());
+            }
+            else
+            {
+                outputHtml = outputBuilder.ToString();
+            }
 
-            string outputHtml = SwaggerUiConfig.StaticInstance.CustomizeHtml(outputBuilder.ToString());
             return new MemoryStream(Encoding.UTF8.GetBytes(outputHtml));
         }
 
