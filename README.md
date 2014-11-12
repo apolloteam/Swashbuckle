@@ -302,7 +302,7 @@ a custom embedded resource. For example, the code sample above overrides index.h
 #### SetCustomizeHtml ####
 
 SetCustomizeHtml method which allows to modify the html of index.html file documentation was added.
-Ex: SetCustomizeHtml( html => html.replace( "<body>", "<body bgcolor=\"#E6E6FA\">" ) )
+Ex: SetCustomizeHtml( html => html.Replace(( "<body>", "<body bgcolor=\"#E6E6FA\">" ) )
 
 ## Transitioning to Swashbuckle 4.0 ##
 
