@@ -16,8 +16,6 @@ namespace Swashbuckle.Dummy
     {
         public static void Register(HttpConfiguration config)
         {
-            Swashbuckle.Bootstrapper.Init(config);
-
             SwaggerSpecConfig.Customize(c =>
                 {
                     c.IgnoreObsoleteActions();
@@ -35,7 +33,7 @@ namespace Swashbuckle.Dummy
                     c.OperationFilter<AddOAuth2Scopes>();
 
                     c.IncludeXmlComments(GetXmlCommentsPath());
-
+                    
                     c.ApiInfo(new Info
                     {
                         Title = "Swashbuckle Dummy",
@@ -63,6 +61,8 @@ namespace Swashbuckle.Dummy
                             }
                         }
                     });
+                    c.SetRootPath("panel");
+                    c.SetForceUseSsl(true);
                 });
 
             SwaggerUiConfig.Customize(c =>
@@ -78,7 +78,7 @@ namespace Swashbuckle.Dummy
 
                 c.EnableOAuth2Support("test-client-id", "test-realm", "Swagger UI");
             });
-
+            Swashbuckle.Bootstrapper.Init(config);
         }
 
         private static string GetXmlCommentsPath()

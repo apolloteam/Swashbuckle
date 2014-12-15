@@ -38,12 +38,24 @@ namespace Swashbuckle.Application
 
         private bool _includeInheritedProperties;
 
+        private bool _forceUseSsl;
+
         private IDictionary<string, Authorization> _authorizations { get; set; }
 
 
         public SwaggerSpecConfig()
         {
-            BasePathResolver = (req) => req.RequestUri.GetLeftPart(UriPartial.Authority) + req.GetConfiguration().VirtualPathRoot.TrimEnd('/');
+            BasePathResolver = (req) =>
+            {
+                string ret = string.Format("{0}{1}", req.RequestUri.GetLeftPart(UriPartial.Authority), req.GetConfiguration().VirtualPathRoot.TrimEnd('/'));
+                if (this.ForceUseSsl)
+                {
+                    ret = ret.Replace("http:", "https:");
+                }
+
+                return ret;
+            };
+
             Versions = null;
 
             _targetVersionResolver = (req) => "1.0"; // obsolete
@@ -260,6 +272,25 @@ namespace Swashbuckle.Application
         public SwaggerSpecConfig SetIncludeInheritedProperties(bool includeInheritedProperties)
         {
             this._includeInheritedProperties = includeInheritedProperties;
+            return this;
+        }
+
+        internal bool ForceUseSsl
+        {
+            get
+            {
+                return this._forceUseSsl;
+            }
+            set
+            {
+                this._forceUseSsl = value;
+            }
+        }
+
+        public SwaggerSpecConfig SetForceUseSsl(bool forceUseSsl)
+        {
+            this._forceUseSsl = forceUseSsl;
+
             return this;
         }
     }
